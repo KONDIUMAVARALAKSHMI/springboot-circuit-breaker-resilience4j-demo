@@ -1,9 +1,0 @@
-com\uma\circuitbreaker\controller\UserController.class
-com\uma\circuitbreaker\dto\UserDTO.class
-com\uma\circuitbreaker\config\AppConfig.class
-com\uma\circuitbreaker\config\CircuitBreakerEventConfig.class
-com\uma\circuitbreaker\controller\CircuitBreakerController.class
-com\uma\circuitbreaker\controller\MockUserController.class
-com\uma\circuitbreaker\service\UserDataService.class
-com\uma\circuitbreaker\CircuitBreakerDemoApplication.class
-com\uma\circuitbreaker\dto\CircuitBreakerMetricsDTO.class
