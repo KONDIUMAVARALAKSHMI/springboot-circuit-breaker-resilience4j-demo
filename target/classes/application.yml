@@ -1,0 +1,56 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: circuit-breaker-demo
+
+# Actuator configuration - expose required endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,metrics,circuitbreakers,info"
+  endpoint:
+    health:
+      show-details: always
+  health:
+    circuitbreakers:
+      enabled: true
+
+# Resilience4j Circuit Breaker Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      userService:
+        # Percentage of failures to open the circuit
+        failure-rate-threshold: 50
+        # Minimum number of calls before calculating failure rate
+        minimum-number-of-calls: 5
+        # Use count-based sliding window
+        sliding-window-type: COUNT_BASED
+        # Number of calls in the sliding window
+        sliding-window-size: 10
+        # Time to stay in OPEN state before moving to HALF_OPEN
+        wait-duration-in-open-state: 10s
+        # Number of test calls in HALF_OPEN state
+        permitted-number-of-calls-in-half-open-state: 2
+        # Automatically transition from OPEN to HALF_OPEN
+        automatic-transition-from-open-to-half-open-enabled: true
+        # Record these exceptions as failures
+        record-exceptions:
+          - java.lang.Exception
+          - java.io.IOException
+          - java.util.concurrent.TimeoutException
+          - org.springframework.web.client.HttpServerErrorException
+          - org.springframework.web.client.ResourceAccessException
+  # Event consumer buffer size for logging state transitions
+  timelimiter:
+    instances:
+      userService:
+        timeout-duration: 3s
+
+logging:
+  level:
+    com.uma.circuitbreaker: DEBUG
+    io.github.resilience4j: INFO
