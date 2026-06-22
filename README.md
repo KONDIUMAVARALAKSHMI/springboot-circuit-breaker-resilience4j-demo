@@ -1,6 +1,5 @@
 # Circuit Breaker Pattern with Resilience4j & Spring Boot
 
-> **Author**: Developer  
 > **Domain:** Backend Development / Distributed Systems  
 > **Stack:** Java 17, Spring Boot 3.2, Resilience4j 2.2, Maven
 
