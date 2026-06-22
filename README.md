@@ -1,6 +1,6 @@
 # Circuit Breaker Pattern with Resilience4j & Spring Boot
 
-> **Author:** Uma VaraLakshmi Kondi  
+> **Author**: Developer  
 > **Domain:** Backend Development / Distributed Systems  
 > **Stack:** Java 17, Spring Boot 3.2, Resilience4j 2.2, Maven
 
@@ -11,6 +11,7 @@
 This project demonstrates the **Circuit Breaker** fault-tolerance pattern using [Resilience4j](https://resilience4j.readme.io/) integrated with a Spring Boot 3 application.
 
 ### What it does
+
 - Exposes a `/api/users/{id}` endpoint that calls an (unreliable) external service
 - Wraps the external call with a `@CircuitBreaker` that opens after 50% failures over 10 calls
 - Returns a **fallback response** when the circuit is OPEN
@@ -18,6 +19,7 @@ This project demonstrates the **Circuit Breaker** fault-tolerance pattern using 
 - Includes a built-in **Mock External Service** you can control to simulate failures
 
 ### Circuit Breaker States
+
 ```
 [CLOSED] ---(too many failures)---> [OPEN] ---(wait 10s)---> [HALF_OPEN] ---(success)---> [CLOSED]
                                                                            ---(failure)---> [OPEN]
@@ -27,13 +29,14 @@ This project demonstrates the **Circuit Breaker** fault-tolerance pattern using 
 
 ## Prerequisites
 
-| Tool | Version |
-|------|---------|
-| Java | 17 or higher |
-| Maven | 3.8+ |
-| curl | Any (for test script) |
+| Tool  | Version               |
+| ----- | --------------------- |
+| Java  | 17 or higher          |
+| Maven | 3.8+                  |
+| curl  | Any (for test script) |
 
 Verify your Java version:
+
 ```bash
 java -version
 ```
@@ -54,6 +57,7 @@ mvn clean install -DskipTests
 ```
 
 A successful build produces:
+
 ```
 target/circuit-breaker-demo-1.0.0.jar
 ```
@@ -70,11 +74,13 @@ java -jar target/circuit-breaker-demo-1.0.0.jar
 The application starts on **port 8080**.
 
 You should see:
+
 ```
 Started CircuitBreakerDemoApplication in X.XXX seconds
 ```
 
 ### Or run with Maven directly:
+
 ```bash
 mvn spring-boot:run
 ```
@@ -84,35 +90,40 @@ mvn spring-boot:run
 ## API Endpoints
 
 ### User API
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users/{id}` | Fetch user (circuit-breaker protected) |
+
+| Method | Endpoint          | Description                            |
+| ------ | ----------------- | -------------------------------------- |
+| GET    | `/api/users/{id}` | Fetch user (circuit-breaker protected) |
 
 **Success Response (200):**
+
 ```json
 { "id": "1", "name": "User 1", "email": "user1@example.com" }
 ```
 
 **Fallback Response (200, when circuit is OPEN):**
+
 ```json
 { "id": "default-id", "name": "Default User", "email": "default@example.com" }
 ```
 
 ### Circuit Breaker Monitoring
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/circuit-breaker/state` | Returns `CLOSED`, `OPEN`, or `HALF_OPEN` |
-| GET | `/api/circuit-breaker/metrics` | Returns simplified metrics JSON |
-| GET | `/actuator/circuitbreakers` | Full Actuator metrics |
+
+| Method | Endpoint                       | Description                              |
+| ------ | ------------------------------ | ---------------------------------------- |
+| GET    | `/api/circuit-breaker/state`   | Returns `CLOSED`, `OPEN`, or `HALF_OPEN` |
+| GET    | `/api/circuit-breaker/metrics` | Returns simplified metrics JSON          |
+| GET    | `/actuator/circuitbreakers`    | Full Actuator metrics                    |
 
 ### Mock External Service Controls
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/mock/users/{id}` | The mock external service |
-| POST | `/mock/failure?enabled=true` | Force always-fail mode |
-| POST | `/mock/success?enabled=true` | Force always-succeed mode |
-| POST | `/mock/reset` | Reset to alternating (50% fail) mode |
-| GET | `/mock/status` | Current mock service status |
+
+| Method | Endpoint                     | Description                          |
+| ------ | ---------------------------- | ------------------------------------ |
+| GET    | `/mock/users/{id}`           | The mock external service            |
+| POST   | `/mock/failure?enabled=true` | Force always-fail mode               |
+| POST   | `/mock/success?enabled=true` | Force always-succeed mode            |
+| POST   | `/mock/reset`                | Reset to alternating (50% fail) mode |
+| GET    | `/mock/status`               | Current mock service status          |
 
 ---
 
@@ -127,6 +138,7 @@ mvn spring-boot:run
 ```
 
 **What the script demonstrates:**
+
 1. Resets the mock service to a clean state
 2. Enables **ALWAYS FAIL** mode and makes 10 calls → trips the circuit breaker
 3. Shows the circuit is now **OPEN** (fallback returned immediately)
@@ -136,6 +148,7 @@ mvn spring-boot:run
 7. Displays final metrics and Actuator data
 
 **Expected output:**
+
 ```
 [Step 1] Initial state: CLOSED
 [Step 2] 10 failing calls...
@@ -188,12 +201,12 @@ resilience4j:
   circuitbreaker:
     instances:
       userService:
-        failure-rate-threshold: 50        # Open when 50% of calls fail
-        minimum-number-of-calls: 5        # At least 5 calls before evaluating
-        sliding-window-type: COUNT_BASED  # Count last N calls
-        sliding-window-size: 10           # Window of 10 calls
-        wait-duration-in-open-state: 10s  # Stay open for 10 seconds
-        permitted-number-of-calls-in-half-open-state: 2  # 2 test calls in HALF_OPEN
+        failure-rate-threshold: 50 # Open when 50% of calls fail
+        minimum-number-of-calls: 5 # At least 5 calls before evaluating
+        sliding-window-type: COUNT_BASED # Count last N calls
+        sliding-window-size: 10 # Window of 10 calls
+        wait-duration-in-open-state: 10s # Stay open for 10 seconds
+        permitted-number-of-calls-in-half-open-state: 2 # 2 test calls in HALF_OPEN
 ```
 
 ---
